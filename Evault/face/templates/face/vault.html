@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>File Vault</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #fdd9d7, #fbc8a8);
+            display: flex;
+            justify-content: center;
+            padding: 50px 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #3a3a3a;
+        }
+
+        .success-message {
+            color: green;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-bottom: 30px;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #2f4b88;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .folder {
+            background-color: #f7f7f7;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        .folder strong {
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            color: #4b2e2e;
+        }
+
+        .folder strong::before {
+            content: '📁';
+            margin-right: 8px;
+        }
+
+        .file-list {
+            margin-left: 24px;
+            margin-top: 10px;
+        }
+
+        .file-list a {
+            display: block;
+            color: #1a2b50;
+            text-decoration: none;
+            margin-bottom: 5px;
+        }
+
+        .file-list a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>File Vault</h2>
+
+        <h3>Upload File</h3>
+        {% if messages %}
+            {% for message in messages %}
+                <p class="success-message">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Upload</button>
+        </form>
+
+        <h3>Saved Files</h3>
+        {% if folder_files %}
+            {% for folder, files in folder_files.items %}
+                <div class="folder">
+                    <strong>{{ folder }}/</strong>
+                    <div class="file-list">
+                        {% for file in files %}
+                            <a href="{% url 'serve_user_file' folder=folder filename=file %}">{{ file }}</a>
+
+                        {% empty %}
+                            <p>No files in this folder.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No uploaded files yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>eVault Registration</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-6 rounded shadow-md w-full max-w-md text-center">
+    <h2 class="text-2xl font-bold mb-4">Register for eVault</h2>
+
+    <input id="pin" type="password" placeholder="Set PIN" class="w-full border px-3 py-2 mb-4 rounded" />
+
+    <video id="webcam" autoplay playsinline class="w-full mb-4 rounded border"></video>
+    <button onclick="register()" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded w-full">Register</button>
+
+    <p id="status" class="mt-4 text-gray-700 text-sm"></p>
+  </div>
+
+  <script>
+    const webcam = document.getElementById('webcam');
+    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+      webcam.srcObject = stream;
+    });
+
+    async function register() {
+      const pin = document.getElementById('pin').value.trim();
+      if (pin.length < 4) {
+        document.getElementById('status').innerText = "⚠️ PIN must be at least 4 digits.";
+        return;
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = webcam.videoWidth;
+      canvas.height = webcam.videoHeight;
+      canvas.getContext('2d').drawImage(webcam, 0, 0);
+
+      const image = canvas.toDataURL('image/jpeg');
+
+      const res = await fetch('/register-face/api/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: image, pin: pin })
+      });
+
+      const data = await res.json();
+      document.getElementById('status').innerText = data.message;
+    }
+    async function register() {
+  const pin = document.getElementById('pin').value.trim();
+  const status = document.getElementById('status');
+  status.innerText = "Processing...";
+
+  if (pin.length < 4) {
+    status.innerText = "⚠️ PIN must be at least 4 digits.";
+    return;
+  }
+
+  const canvas = document.createElement('canvas');
+  canvas.width = webcam.videoWidth;
+  canvas.height = webcam.videoHeight;
+  canvas.getContext('2d').drawImage(webcam, 0, 0);
+
+  const image = canvas.toDataURL('image/jpeg');
+
+  try {
+    const res = await fetch('/register-face/api/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: image, pin: pin })
+    });
+
+    const data = await res.json();
+    status.innerText = data.message;
+  } catch (error) {
+    status.innerText = "❌ Error connecting to server.";
+    console.error(error);
+  }
+}
+async function register() {
+  const pin = document.getElementById('pin').value.trim();
+  const status = document.getElementById('status');
+  status.innerText = "Processing...";
+
+  if (pin.length < 4) {
+    status.innerText = "⚠️ PIN must be at least 4 digits.";
+    return;
+  }
+
+  const canvas = document.createElement('canvas');
+  canvas.width = webcam.videoWidth;
+  canvas.height = webcam.videoHeight;
+  canvas.getContext('2d').drawImage(webcam, 0, 0);
+
+  const image = canvas.toDataURL('image/jpeg');
+
+  try {
+    const res = await fetch('/register-face/api/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: image, pin: pin })
+    });
+
+    const data = await res.json();
+    status.innerText = data.message;
+  } catch (error) {
+    status.innerText = "❌ Error connecting to server.";
+    console.error(error);
+  }
+}
+
+  </script>
+</body>
+</html>

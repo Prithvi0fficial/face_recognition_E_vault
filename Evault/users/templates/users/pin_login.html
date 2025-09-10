@@ -1,0 +1,13 @@
+<!-- users/templates/users/pin_login.html -->
+<h2>Login with PIN</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+</form>
+
+{% if messages %}
+  {% for message in messages %}
+    <p>{{ message }}</p>
+  {% endfor %}
+{% endif %}

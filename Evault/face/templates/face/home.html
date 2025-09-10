@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>E-Vault — Hero</title>
+
+  <!-- Google font (Poppins) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0f1116;
+      --accent:#f6d71a;
+      --muted:#e6dac7;
+      --shield-dark:#172433;
+      --shield-mid:#21334a;
+      --vault-light:#5f86ad;
+      --vault-mid:#3a5e86;
+      --vault-dark:#22344b;
+    }
+
+    html,body{
+      height:100%;
+      margin:0;
+      font-family:"Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(1200px 600px at 10% 20%, rgba(255,255,255,0.02), transparent),
+                  linear-gradient(180deg, rgba(0,0,0,0.06), transparent 40%),
+                  var(--bg);
+      color:var(--muted);
+    }
+
+    .hero{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:48px 6vw;
+      box-sizing:border-box;
+      gap:40px;
+    }
+
+    .left{
+      flex:1 1 58%;
+      max-width:900px;
+    }
+    .right{
+      flex:0 0 38%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-width:320px;
+    }
+
+    nav.top{
+      position:fixed;
+      left:0;
+      right:0;
+      top:18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:0 6vw;
+      pointer-events:none;
+    }
+    nav.top .links{
+      width:100%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      pointer-events:auto;
+    }
+    nav a{
+      text-decoration:none;
+      color:var(--accent);
+      font-weight:600;
+      padding:8px 12px;
+      letter-spacing:0.2px;
+      transition:opacity .18s ease;
+    }
+    nav a:hover{ opacity:0.85; }
+
+    h1{
+      margin:0 0 12px 0;
+      font-weight:900;
+      font-size: clamp(48px, 12vw, 140px);
+      line-height:0.88;
+      color:var(--accent);
+      letter-spacing:-1px;
+    }
+
+    p.lead{
+      margin:0;
+      margin-top:12px;
+      font-size:clamp(18px, 2.5vw, 30px);
+      color:var(--muted);
+      font-weight:500;
+    }
+
+    .ctnt{ margin-left:2px; }
+
+    .vault{
+      width:100%;
+      max-width:520px;
+      transform:translateY(6px);
+    }
+
+    .badge{
+      display:inline-block;
+      margin-bottom:18px;
+      color:var(--accent);
+      font-weight:600;
+    }
+
+    @media (max-width:980px){
+      .hero{ flex-direction:column-reverse; padding-top:100px; gap:28px; }
+      .right{ width:100%; max-width:520px; }
+      nav.top{ top:12px; }
+      h1, .ctnt { text-align:center; }
+    }
+
+    @media (max-width:520px){
+      nav a{ font-size:14px; padding:6px 8px; }
+      h1{ font-size:48px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top" aria-label="Top Navigation">
+    <div class="links">
+      <div style="display:flex; gap:12px;">
+        {% if user.is_authenticated %}
+          <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+          <a href="{% url 'user_pin_login' %}">User Login</a>
+        {% endif %}
+      </div>
+
+      <div style="display:flex; gap:12px;">
+        {% if not user.is_authenticated %}
+          <a href="{% url 'initial_register' %}">Sign Up</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <main class="hero" role="main">
+    <div class="left">
+      <div class="badge">
+        {% if user.is_authenticated %}
+          Welcome, {{ user.username }}
+        {% else %}
+          Login &nbsp;&nbsp;&nbsp; Register
+        {% endif %}
+      </div>
+
+      <h1>E-Vault</h1>
+
+      <div class="ctnt">
+        <p class="lead">Secure your Data</p>
+      </div>
+
+      <br>
+      <a href="{% url 'login_page' %}">Login E-Vault</a><br><br>
+      <a href="{% url 'register_face_page' %}">Open a E-Vault</a>
+    </div>
+
+    <div class="right" aria-hidden="true">
+      <!-- Inline SVG: shield + vault box -->
+      <svg class="vault" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Vault illustration">
+        <!-- shield -->
+        <defs>
+          <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="18" stdDeviation="36" flood-color="#000" flood-opacity="0.35"/>
+          </filter>
+        </defs>
+
+        <!-- shield base -->
+        <g filter="url(#softShadow)">
+          <path d="M400 60
+                   C520 60 650 120 680 150
+                   C730 190 760 210 760 270
+                   C760 410 680 520 560 580
+                   C520 610 480 650 400 700
+                   C320 650 280 610 240 580
+                   C120 520 40 410 40 270
+                   C40 210 70 190 120 150
+                   C150 120 280 60 400 60 Z"
+                fill="var(--shield-mid)"/>
+          <path d="M400 95
+                   C500 95 610 145 640 170
+                   C680 205 708 222 708 270
+                   C708 395 648 480 560 530
+                   C520 555 480 588 400 625
+                   C320 588 280 555 240 530
+                   C152 480 92 395 92 270
+                   C92 222 120 205 160 170
+                   C190 145 300 95 400 95 Z"
+                fill="var(--shield-dark)"/>
+        </g>
+
+        <!-- vault box (front) -->
+        <g transform="translate(225,210)">
+          <!-- outer box shadow -->
+          <rect x="0" y="70" width="350" height="320" rx="26" ry="26" fill="url(#g1)" />
+        </g>
+
+        <!-- We'll build the vault with manual shapes for depth -->
+        <g transform="translate(215,195) scale(1.05)">
+          <!-- dark backing shadow -->
+          <rect x="20" y="90" width="360" height="340" rx="30" fill="rgba(17,28,42,0.35)"/>
+
+          <!-- main vault body -->
+          <rect x="40" y="60" width="320" height="300" rx="24" ry="24" fill="var(--vault-mid)"/>
+
+          <!-- inner inset -->
+          <rect x="64" y="84" width="272" height="236" rx="14" ry="14" fill="var(--vault-light)" />
+
+          <!-- door outline -->
+          <path d="M66 86 h268 a14 14 0 0 1 14 14 v208 a14 14 0 0 1 -14 14 h-268 a14 14 0 0 1 -14 -14 v-208 a14 14 0 0 1 14 -14 z" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="8"/>
+
+          <!-- hinge (left) -->
+          <rect x="52" y="150" width="12" height="48" rx="4" fill="var(--vault-dark)"/>
+          <rect x="52" y="98" width="12" height="48" rx="4" fill="var(--vault-dark)"/>
+
+          <!-- dial circle background -->
+          <circle cx="200" cy="190" r="60" fill="var(--vault-dark)" opacity="0.95"/>
+          <circle cx="200" cy="190" r="46" fill="var(--vault-mid)"/>
+
+          <!-- dial spokes -->
+          <g transform="translate(200,190)">
+            <!-- center -->
+            <circle cx="0" cy="0" r="12" fill="var(--vault-dark)"/>
+            <!-- spokes -->
+            <g stroke="var(--vault-dark)" stroke-width="10" stroke-linecap="round">
+              <line x1="0" y1="-42" x2="0" y2="-70"/>
+              <line x1="0" y1="42" x2="0" y2="70"/>
+              <line x1="-42" y1="0" x2="-70" y2="0"/>
+              <line x1="42" y1="0" x2="70" y2="0"/>
+            </g>
+          </g>
+
+          <!-- feet -->
+          <rect x="80" y="372" width="72" height="24" rx="6" fill="rgba(0,0,0,0.2)"/>
+          <rect x="258" y="372" width="72" height="24" rx="6" fill="rgba(0,0,0,0.18)"/>
+
+          <!-- subtle top highlight -->
+          <rect x="64" y="64" width="272" height="10" rx="5" fill="rgba(255,255,255,0.03)"/>
+        </g>
+      </svg>
+    </div>
+  </main>
+</body>
+</html>

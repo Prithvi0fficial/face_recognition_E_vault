@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>eVault Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md text-center">
+    <h2 class="text-2xl font-bold mb-4">Unlock eVault</h2>
+    <p class="text-gray-600 mb-2">Click below to scan your face or enter your PIN.</p>
+
+    <video id="webcam" autoplay playsinline class="w-full mb-4 rounded border"></video>
+
+    <input id="pin" type="password" placeholder="Enter PIN (if needed)" class="w-full border px-3 py-2 mb-4 rounded">
+
+    <button onclick="attemptLogin()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
+      🔍 Scan Face / Use PIN
+    </button>
+
+    <p id="status" class="text-sm text-gray-700 mt-4"></p>
+  </div>
+
+  <script>
+    const webcam = document.getElementById('webcam');
+    const statusText = document.getElementById('status');
+
+    // Start the webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        webcam.srcObject = stream;
+      })
+      .catch(err => {
+        statusText.innerText = "❌ Cannot access camera: " + err.message;
+      });
+
+    async function attemptLogin() {
+  const pin = document.getElementById('pin').value;
+  const statusText = document.getElementById('status');
+  statusText.innerText = "⏳ Verifying, please wait...";
+
+  // Capture frame from webcam
+  const canvas = document.createElement('canvas');
+  canvas.width = webcam.videoWidth;
+  canvas.height = webcam.videoHeight;
+  canvas.getContext('2d').drawImage(webcam, 0, 0);
+  const image = canvas.toDataURL('image/jpeg');
+
+  // Debugging
+  console.log("Sending image:", image.substring(0, 100)); // Just preview first 100 chars
+  console.log("Sending pin:", pin);
+
+  try {
+    const response = await fetch('/verify-login/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin: pin, image: image })
+    });
+
+    const data = await response.json();
+    console.log("Response from server:", data);
+
+    if (data.status === 'success') {
+      statusText.innerText = `✅ ${data.message}`;
+      setTimeout(() => {
+        window.location.href = "/upload/";
+      }, 1500);
+    } else {
+      statusText.innerText = `❌ ${data.message}`;
+    }
+  } catch (error) {
+    console.error("Fetch error:", error);
+    statusText.innerText = "❌ Could not connect to server.";
+  }
+}
+
+  </script>
+</body>
+</html>

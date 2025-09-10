@@ -1,0 +1,9 @@
+django
+djangorestframework
+pillow
+face-recognition
+opencv-python
+numpy
+requests
+python-dotenv
+wheel
