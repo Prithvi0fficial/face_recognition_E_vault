@@ -7,3 +7,5 @@ numpy
 requests
 python-dotenv
 wheel
+dlib
+gunicorn
